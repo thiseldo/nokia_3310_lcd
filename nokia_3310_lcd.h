@@ -5,6 +5,16 @@
 #ifndef _NOKIA_3310_LCD_H
 #define _NOKIA_3310_LCD_H
 
+#if ARDUINO >= 100
+  #include <Arduino.h> // Arduino 1.0
+  #define WRITE_RESULT size_t
+  #define WRITE_RETURN return 1;
+#else
+  #include <WProgram.h> // Arduino 0022
+  #define WRITE_RESULT void
+  #define WRITE_RETURN
+#endif
+
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 #include "Print.h"
@@ -21,7 +31,7 @@
 #define SPI_CS  PORTB2
 #define SPI_CS_PORT  PORTB
 #define SPI_CS_DDR  DDRB
-// Alternative DIgital Pin 6 if you want to modify shield to use Ethernet at same time
+// Alternative Digital Pin 6 if you want to modify shield to use Ethernet at same time
 //#define SPI_CS  PORTD6
 //#define SPI_CS_PORT  PORTD
 //#define SPI_CS_DDR  DDRD
@@ -62,7 +72,7 @@ class Nokia_3310_lcd : public Print
   	
   	// Init/Clear/position functions
 	void init(void);
-  	virtual void write(uint8_t byte);
+  	virtual WRITE_RESULT write(uint8_t byte);
 	void clear(void);
 	void gotoXY(unsigned char x, unsigned char y);
 	void update(void);

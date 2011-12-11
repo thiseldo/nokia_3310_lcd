@@ -33,18 +33,20 @@
  * Updated: 2nd September 2010 by Andrew Lindsay based on changes supplied
  * by jmccrohan to add extra characters to big_font
  *
+ * Updated: 11/12/2011, Andrew Lindsay. Updates for Arduino 1.0 compatibility
  */
 
 #include <avr/pgmspace.h>
 #include <avr/io.h>
-#include <WConstants.h>
+//#include <WConstants.h>
 #include "nokia_3310_lcd.h"
 #include "font_5x7.hpp"
 #include "font_big.hpp"
 
 // defines for accessing lcd
 #define SPI_INIT		SPCR = 0x51
-#define LCDENABLE		SPI_INIT; SPI_CS_PORT &= ~(1<<SPI_CS)	// Enable LCD
+//#define LCDENABLE		SPI_INIT; SPI_CS_PORT &= ~(1<<SPI_CS)	// Enable LCD
+#define LCDENABLE		SPI_CS_PORT &= ~(1<<SPI_CS)	// Enable LCD
 #define LCDDISABLE	SPI_CS_PORT |= (1<<SPI_CS)	// disable LCD
 #define LCDCMDMODE	PORTB &= ~(1<<LCD_DC)	// Set LCD in command mode
 #define LCDDATAMODE	PORTB |= (1<<LCD_DC)	// Set LCD to Data mode
@@ -408,9 +410,10 @@ void Nokia_3310_lcd::writeChar(unsigned char ch, char mode) {
  * Argument(s)  : character to write
  * Return value : none
  */
-void Nokia_3310_lcd::write(uint8_t b)
+WRITE_RESULT Nokia_3310_lcd::write(uint8_t b)
 {
 	writeChar(b,0);
+	WRITE_RETURN
 }
 
 /*
@@ -664,7 +667,7 @@ int  adc_key_val[NUM_KEYS] ={
   30, 150, 360, 535, 760 };
 
 char Nokia_3310_lcd::get_key() {
-  char k;
+  int k;
   int input = analogRead(0);
 
   for (k = 0; k < NUM_KEYS; k++) {
